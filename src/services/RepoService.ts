@@ -113,6 +113,28 @@ export class RepoService {
         }
     }
 
+    private async createDevelopBranch(github: Octokit, repo: any, sha: string){
+        // https://octokit.github.io/rest.js/#octokit-routes-git-create-ref
+
+        let spin = new Spinner('Creating develop branch...');
+        let params: any = {
+            owner : repo.owner.login,
+            repo : repo.name,
+            ref : "refs/heads/develop",
+            sha : sha
+        }
+
+        try {
+            spin.start();
+            await github.git.createRef(params);
+            console.log(chalk.green(`Branch develop succesfully created`));
+            spin.stop();
+        } catch {
+            console.log(chalk.yellow("Warning", "Branch develop already exist on remote"));
+        }
+
+    }
+
     public async createGitignore() {
         const filelist = _.without(fs.readdirSync('.'), '.git', '.gitignore');
 
@@ -128,7 +150,15 @@ export class RepoService {
         }
     }
 
-    public async setupRepo(url: string) {
+    public async protectBaseBranches() {
+        // TODO
+    }
+
+    public async cloneRepo(ssh_url: string) {
+        // TODO
+    }
+
+    public async initRepo(ssh_url: string) {
         const status = new Spinner('Initializing local repository and pushing to remote...');
         status.start();
 
@@ -138,7 +168,7 @@ export class RepoService {
                 .add('.gitignore')
                 .add('./*')
                 .commit('Initial commit')
-                .addRemote('origin', url)
+                .addRemote('origin', ssh_url)
                 .push('origin', 'master');
             return true;
         } catch (err) {
