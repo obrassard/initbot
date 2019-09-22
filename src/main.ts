@@ -1,13 +1,15 @@
-import { GithubService } from "./services/GithubService";
-import Octokit = require("@octokit/rest");
+import { RepoService } from "./services/RepoService";
+import { EmptyRepoRequest } from "./models/EmptyRepoRequest";
+import { TemplateRepoRequest } from "./models/TemplateRepoRequest";
 
 async function main() {
-    let github:Octokit|undefined = await GithubService.getInstance()
-    if (github != undefined) {
-        github.repos.create
-        let res = await github.users.getAuthenticated();
-        console.log(res);
-    }
+    
+    let service = new RepoService();
+    // let request = new EmptyRepoRequest('testRepo2',true)
+    // request.description = 'test descriptions';
+    // request.collaborators = ["obrassard-test"]
+    // let url = await service.createEmptyRepo(request);
+
 }
 
 main();

@@ -2,7 +2,7 @@
 
 > Description todo
 
-Inspired from URL: https://www.sitepoint.com/javascript-command-line-interface-cli-node-js
+Inspired from URL: https://github.com/sitepoint-editors/ginit
 
 ## Requirements
 
@@ -16,7 +16,7 @@ Inspired from URL: https://www.sitepoint.com/javascript-command-line-interface-c
 1. Clone repo
 2. Run `npm install`
 3. Install the module globally with `npm install -g`
-4. Run `ginit <repo-name> <longer repo description>`
+4. Run `initbot <repo-name> <longer repo description>`
 
 ## Scripts 
 
