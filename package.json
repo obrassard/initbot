@@ -9,7 +9,8 @@
     "dev": "node -r ts-node/register ./src/main.ts",
     "dist": "npm run clean && tsc",
     "watch": "nodemon --exec npm run dev",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "global": "npm run dist && npm install -g"
   },
   "keywords": [
     "Git",
@@ -19,7 +20,7 @@
   "author": "Olivier Brassard <brassard.oli@gmail.com>",
   "license": "MIT",
   "bin": {
-    "initbot": "./index.js"
+    "initbot": "./dist/main.js"
   },
   "dependencies": {
     "@octokit/rest": "^16.28.0",

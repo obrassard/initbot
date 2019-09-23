@@ -38,8 +38,18 @@ export class RepoService {
                         await this.addCollaborators(github,repo, req.collaborators);
                     }
 
+                    await this.initRepo(repo.ssh_url);
+
+                    if (req.createDevelop) {
+                        await this.createDevelopBranch(github,repo);
+                    }
+
+                    if (req.protectBranch) {
+                        await this.protectBaseBranches(github,repo,req.createDevelop);
+                    }
+
                     status.stop();
-                    return response.data.html_url;
+                    return response.data;
                 } catch (err) {
                     status.stop();
                     if (err.status == 422) {
@@ -57,7 +67,7 @@ export class RepoService {
         return GithubService.getInstance().then(async (github) => {
             if (github != undefined) {
 
-                const status = new Spinner('Creating remote repository...');
+                let status = new Spinner('Creating remote repository...');
                 status.start();
 
                 let data: any = {
@@ -72,14 +82,27 @@ export class RepoService {
                     const response = await github.repos.createUsingTemplate(data);
                     let repo = response.data;
 
+                    status.stop();
                     console.log(chalk.green(`Your new repo was successfully created : ${repo.html_url}`));
 
                     if (req.collaborators != undefined) {
+                        status = new Spinner('Adding collaborators')
                         await this.addCollaborators(github,repo, req.collaborators);
+                        status.stop();
+                    }
+
+                    await this.cloneRepo(repo.ssh_url, repo.name);
+
+                    if (req.createDevelop) {
+                        await this.createDevelopBranch(github,repo);
+                    }
+
+                    if (req.protectBranch) {
+                        await this.protectBaseBranches(github,repo,req.createDevelop);
                     }
 
                     status.stop();
-                    return response.data.html_url;
+                    return response.data;
                 } catch (err) {
                     status.stop();
                     if (err.status == 422) {
@@ -88,6 +111,7 @@ export class RepoService {
                         //template not found
                         console.log(chalk.red(`The specified template (${data.template_owner}/${data.template_repo}) doesn't exist.`));
                     } else {
+                        console.log(err);
                         console.log(chalk.red("An unexpected error occured, please try again."));
                     }
                 
@@ -105,7 +129,7 @@ export class RepoService {
                     repo: repo.name,
                     username: user
                 })
-                console.log(chalk.green(`${repo.html_url} has been invited to collaborate to your repo`));
+                console.log(chalk.green(`${repo.owner.login} has been invited to collaborate to your repo`));
 
             } catch {
                 console.log(chalk.red(`Impossible to add this colaborator : ${user}`))
@@ -113,24 +137,22 @@ export class RepoService {
         }
     }
 
-    private async createDevelopBranch(github: Octokit, repo: any, sha: string){
-        // https://octokit.github.io/rest.js/#octokit-routes-git-create-ref
+    private async createDevelopBranch(github: Octokit, repo: any){
 
         let spin = new Spinner('Creating develop branch...');
-        let params: any = {
-            owner : repo.owner.login,
-            repo : repo.name,
-            ref : "refs/heads/develop",
-            sha : sha
-        }
 
         try {
             spin.start();
-            await github.git.createRef(params);
+            const gitDir = require('simple-git')(`./${repo.name}`)
+
+            await gitDir.checkoutLocalBranch('develop').push('origin', 'develop');
+
+            spin.stop();
             console.log(chalk.green(`Branch develop succesfully created`));
             spin.stop();
-        } catch {
-            console.log(chalk.yellow("Warning", "Branch develop already exist on remote"));
+        } catch  (e) {
+            console.log(e);
+            console.log(chalk.yellow("Warning", "Couldn't create develop on remote"));
         }
 
     }
@@ -150,12 +172,61 @@ export class RepoService {
         }
     }
 
-    public async protectBaseBranches() {
-        // TODO
+    public async protectBaseBranches(github: Octokit, repo:any, develop: boolean) {
+        let spin = new Spinner('Protecting branches...');
+        
+        try {
+
+            await github.repos.updateBranchProtection({
+                owner: repo.owner.login,
+                repo: repo.name,
+                branch : "master",
+                required_status_checks : null,
+                enforce_admins : true,
+                required_pull_request_reviews: {
+                    dismissal_restrictions : undefined,
+                    dismiss_stale_reviews : undefined
+                },
+                restrictions : null
+            })
+
+            if (develop) {
+                await github.repos.updateBranchProtection({
+                    owner: repo.owner.login,
+                    repo: repo.name,
+                    branch : "develop",
+                    required_status_checks : null,
+                    enforce_admins : true,
+                    required_pull_request_reviews: {
+                        dismissal_restrictions : undefined,
+                        dismiss_stale_reviews : undefined
+                    },
+                    restrictions : null
+                }) 
+            }
+
+            spin.stop();
+            console.log(chalk.green(`Branches succesfully protected on remote.`));
+        
+        } catch (e) {
+            spin.stop()
+            console.log(chalk.yellow("Warning : An error occured while protecting branches"));
+        }
     }
 
-    public async cloneRepo(ssh_url: string) {
-        // TODO
+    public async cloneRepo(ssh_url: string, name:string) {
+        const status = new Spinner('Cloning repo...');
+        status.start();
+        try {
+            await git.clone(ssh_url, `./${name}`);
+            status.stop();
+            console.log(chalk.green('Repository was cloned at ' + process.cwd() + '/' + name))
+            return true;
+        } catch (err) {
+            throw err;
+        } finally {
+            status.stop();
+        }
     }
 
     public async initRepo(ssh_url: string) {
@@ -163,6 +234,7 @@ export class RepoService {
         status.start();
 
         try {
+            await this.createGitignore();
             await git
                 .init()
                 .add('.gitignore')

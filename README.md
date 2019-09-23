@@ -30,3 +30,19 @@ Inspired from URL: https://github.com/sitepoint-editors/ginit
 
 `npm run clean` : delete compiled js files
 
+
+```
+--alias alias=test
+--rm alias
+
+-t template/owner
+
+-d "description"
+-c user1,user2
+-f setting.json
+-b -> no develop
+-u -> no protection
+-p -> public
+
+--help -> show help
+```

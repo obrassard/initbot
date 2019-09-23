@@ -51,33 +51,14 @@ export class InquirerService {
 		return code;
 	}
 
-	public static askRegeneratedToken() {
-		const questions = [
-			{
-				name: 'token',
-				type: 'input',
-				message: 'Enter your new regenerated token:',
-				validate: function (value: string) {
-					if (value.length) {
-						return true;
-					} else {
-						return 'Please enter your new regenerated token:.';
-					}
-				}
-			}
-		];
-		return inquirer.prompt(questions);
-	}
-
 	public static askRepoDetails() {
-		const argv = require('minimist')(process.argv.slice(2));
 
 		const questions = [
 			{
 				type: 'input',
 				name: 'name',
 				message: 'Enter a name for the repository:',
-				default: argv._[0] || FileService.getCurrentDirectoryBase(),
+				default: FileService.getCurrentDirectoryBase(),
 				validate: function (value: string) {
 					if (value.length) {
 						return true;
@@ -89,7 +70,6 @@ export class InquirerService {
 			{
 				type: 'input',
 				name: 'description',
-				default: argv._[1] || null,
 				message: 'Optionally enter a description of the repository:'
 			},
 			{
@@ -97,8 +77,30 @@ export class InquirerService {
 				name: 'visibility',
 				message: 'Public or private:',
 				choices: ['public', 'private'],
-				default: 'public'
-			}
+				default: 'private'
+			},
+			{
+				type: 'input',
+				name: 'collaborators',
+				message: 'Add collaborators ? (Usernames separated by commas):',
+			},
+			{
+				type: 'input',
+				name: 'template',
+				message: 'Optionally enter a template repo [owner/repo]:',
+			},
+			{
+				type: 'confirm',
+				name: 'createDevelop',
+				message: 'Create develop branch [yes, no]:',
+				default: true
+			},
+			{
+				type: 'confirm',
+				name: 'protectBranches',
+				message: 'Protect master and develop branches [yes,no]:',
+				default: true
+			},
 		];
 		return inquirer.prompt(questions);
 	}

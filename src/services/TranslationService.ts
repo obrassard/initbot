@@ -2,6 +2,8 @@ import locale from 'os-locale';
 
 export class TranslationService {
 
+    // TODO : Translate strings
+
     /**
      * Get the translation object based on the os language
      */
@@ -29,11 +31,11 @@ export class TranslationService {
 
     private static _loadTranslations(key: string) {
         try { 
-            this._currentTrad = require(`${process.cwd()}/i18n/${key}.json`);
+            this._currentTrad = require(`../../i18n/${key}.json`);
         } catch {
             try {
                 // Using en as fallback language.
-                this._currentTrad = require(`${process.cwd()}/i18n/en.json`);
+                this._currentTrad = require(`../../i18n/en.json`);
             }
             catch {
                 throw new Error('Unexpected error. Cannot find translations.');
