@@ -3,7 +3,9 @@
   "version": "1.0.0-beta.2",
   "description": "",
   "repository": "git://github.com/obrassard/initbot.git",
-  "publishConfig": { "registry": "https://npm.pkg.github.com" },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "main": "index.js",
   "scripts": {
     "start": "tsc && node dist/main.js",
@@ -11,7 +13,9 @@
     "dist": "npm run clean && tsc",
     "watch": "nodemon --exec npm run dev",
     "clean": "rm -rf dist",
-    "global": "npm run dist && npm install -g"
+    "global": "npm run dist && npm install -g",
+    "publish": "npm run dist && npm publish",
+    "test": "mocha --require ts-node/register src/tests/**/*.spec.ts"
   },
   "keywords": [
     "Git",
@@ -39,13 +43,15 @@
   },
   "devDependencies": {
     "@types/clui": "^0.3.0",
+    "@types/configstore": "^4.0.0",
     "@types/inquirer": "^6.5.0",
     "@types/lodash": "^4.14.138",
-    "@types/configstore": "^4.0.0",
-    "@types/touch": "^3.1.1",
     "@types/node": "^12.7.5",
+    "@types/touch": "^3.1.1",
+    "@types/mocha": "^5.2.7",
     "eslint": "^6.4.0",
     "eslint-plugin-import": "^2.18.2",
+    "mocha": "^6.2.0",
     "nodemon": "^1.19.2",
     "ts-node": "^8.4.1",
     "typescript": "^3.5.3"

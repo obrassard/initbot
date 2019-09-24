@@ -58,4 +58,10 @@ export class AliasesService {
         delete aliasConfig[alias];
         console.log(chalk.green(`The alias @${alias} has been deleted.`))
     }
+
+    public static clearAllAliases() {
+        const config = new Configstore('initbot');
+        config.delete("aliases");
+        return true;
+    }
 }
