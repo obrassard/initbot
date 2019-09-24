@@ -8,6 +8,7 @@ import chalk from "chalk";
 import { AliasRequest } from "./models/AliasRequest";
 import { AliasesService } from "./services/AliasesService";
 import { TemplateRepoRequest } from "./models/TemplateRepoRequest";
+import { GithubService } from "./services/GithubService";
 
 async function launchInteractiveMode(): Promise<AppInputs>{
     let args:any = await InquirerService.askRepoDetails();
@@ -69,6 +70,8 @@ function parseArguments(){
 
     if ('help' in args) {
         input.appMode = "help";
+    } if ('logout' in args) {
+        input.appMode = "logout";
     } else if ('alias' in args ) {
         input.appMode = "alias";
         input.alias = new AliasRequest(args.alias);
@@ -119,7 +122,7 @@ function parseArguments(){
 }
 
 async function main() {
-    
+
     let args = parseArguments();
     if (args == null) {
         args =  await launchInteractiveMode();
@@ -130,7 +133,10 @@ async function main() {
     } else if (args.appMode == "rmalias") {
         AliasesService.removeAlias(args.aliasName!);
     } else if (args.appMode == "help") {
-        console.log('HELP TEXT')
+        //TODO Help manual
+        console.log('HELP TEXT');
+    } else if (args.appMode == "logout") {
+        await GithubService.destroyToken();
     } else {
 
         if (args.useTemplate) {
@@ -152,7 +158,7 @@ async function main() {
         }
     }
     
-    console.log('Done !', "Thanks for using initbot");
+    console.log("Thanks for using initbot");
 
 }
 
