@@ -1,24 +1,38 @@
 # Initbot
 
-> Description todo
+> TODO Project description
 
-Inspired from URL: https://github.com/sitepoint-editors/ginit
+> This project was inspired by : [sitepoint-editors/ginit](https://github.com/sitepoint-editors/ginit)
 
 ## Requirements
 
 * [Node.js](http://nodejs.org/)
 * [Git](https://git-scm.com/)
-* [GitHub account](https://github.com/)
+* [A GitHub account](https://github.com/)
+* A SSH key linked to your GitHub account
+
+## Getting started
+
+1. Install initbot from NPM
+
+```
+npm install -g obrassard/initbot
+```
+
+2. Make sure you've added a local SSH key to your GitHub account. This is required to clone and push repos.
+
+(Learn more here : [Connecting to GitHub with SSH](https://help.github.com/en/articles/connecting-to-github-with-ssh)) 
 
 
-## Installation Steps
+
+## Installation Steps (for dev purpose)
 
 1. Clone repo
 2. Run `npm install`
-3. Install the module globally with `npm install -g`
-4. Run `initbot <repo-name> <longer repo description>`
+3. Install the module globally with `npm run global`
+4. Run `initbot`
 
-## Scripts 
+### npm scripts 
 
 `npm start` : build TypeScript files and run the app
 
@@ -30,6 +44,9 @@ Inspired from URL: https://github.com/sitepoint-editors/ginit
 
 `npm run clean` : delete compiled js files
 
+`npm run global` : compile TypeScript and install the package globally.
+
+## Usage
 
 ```
 --alias alias=test
@@ -43,6 +60,8 @@ Inspired from URL: https://github.com/sitepoint-editors/ginit
 -b -> no develop
 -u -> no protection
 -p -> public
+
+--logout
 
 --help -> show help
 ```

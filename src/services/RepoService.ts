@@ -3,8 +3,7 @@ import fs from 'fs';
 import CLI from 'clui';
 import touch from 'touch';
 import chalk from 'chalk';
-
-const git = require('simple-git')();
+import '../extensions/stringExtension';
 const Spinner = CLI.Spinner;
 
 import { InquirerService } from './InquirerService';
@@ -38,10 +37,12 @@ export class RepoService {
                         await this.addCollaborators(github,repo, req.collaborators);
                     }
 
-                    await this.initRepo(repo.ssh_url);
+                    status.stop();
+
+                    await this.initRepo(repo.ssh_url, repo.name);
 
                     if (req.createDevelop) {
-                        await this.createDevelopBranch(github,repo);
+                        await this.createDevelopBranch(repo);
                     }
 
                     if (req.protectBranch) {
@@ -94,7 +95,7 @@ export class RepoService {
                     await this.cloneRepo(repo.ssh_url, repo.name);
 
                     if (req.createDevelop) {
-                        await this.createDevelopBranch(github,repo);
+                        await this.createDevelopBranch(repo);
                     }
 
                     if (req.protectBranch) {
@@ -137,15 +138,15 @@ export class RepoService {
         }
     }
 
-    private async createDevelopBranch(github: Octokit, repo: any){
+    private async createDevelopBranch(repo: any){
 
         let spin = new Spinner('Creating develop branch...');
 
         try {
             spin.start();
-            const gitDir = require('simple-git')(`./${repo.name}`)
+            const git = require('simple-git')(`./${repo.name}`)
 
-            await gitDir.checkoutLocalBranch('develop').push('origin', 'develop');
+            await git.checkoutLocalBranch('develop').push('origin', 'develop');
 
             spin.stop();
             console.log(chalk.green(`Branch develop succesfully created`));
@@ -157,26 +158,27 @@ export class RepoService {
 
     }
 
-    public async createGitignore() {
-        const filelist = _.without(fs.readdirSync('.'), '.git', '.gitignore');
+    public async createGitignore(dirname:string) {
+        const filelist = ["node_modules", ".vscode", "./idea"];
 
-        if (filelist.length) {
-            const answers: any = await InquirerService.askIgnoreFiles(filelist);
-            if (answers.ignore.length) {
-                fs.writeFileSync('.gitignore', answers.ignore.join('\n'));
-            } else {
-                touch('.gitignore');
-            }
+        const answers: any = await InquirerService.askIgnoreFiles(filelist);
+        if (answers.ignore.length) {
+            console.log('Create file')
+            fs.writeFileSync(`./${dirname}/.gitignore`, answers.ignore.join('\n'));
         } else {
-            touch('.gitignore');
+            touch(`./${dirname}/.gitignore`);
         }
+    }
+
+    public async createReadme(projectName:string) {
+        fs.writeFileSync(`./${projectName}/readme.md`, `# ${projectName.capitalize()}`);
     }
 
     public async protectBaseBranches(github: Octokit, repo:any, develop: boolean) {
         let spin = new Spinner('Protecting branches...');
         
         try {
-
+            spin.start();
             await github.repos.updateBranchProtection({
                 owner: repo.owner.login,
                 repo: repo.name,
@@ -218,35 +220,57 @@ export class RepoService {
         const status = new Spinner('Cloning repo...');
         status.start();
         try {
+            let git = require('simple-git')('./');
             await git.clone(ssh_url, `./${name}`);
             status.stop();
             console.log(chalk.green('Repository was cloned at ' + process.cwd() + '/' + name))
             return true;
         } catch (err) {
-            throw err;
+            console.log(chalk.red('Could not clone the repo. Please ensure that you have an SSH key configured with your GitHub account'))
+            console.log(err);
+            process.exit(1);
         } finally {
             status.stop();
         }
     }
 
-    public async initRepo(ssh_url: string) {
+    public async initRepo(ssh_url: string, name:string) {
         const status = new Spinner('Initializing local repository and pushing to remote...');
-        status.start();
-
         try {
-            await this.createGitignore();
+            status.start();
+            this.createDirectory(name);
+            let git = require('simple-git')(`./${name}`);
+            status.stop()
+            await this.createGitignore(name);
+            await this.createReadme(name);
+            status.start();
             await git
                 .init()
                 .add('.gitignore')
+                .add('readme.md')
                 .add('./*')
                 .commit('Initial commit')
                 .addRemote('origin', ssh_url)
                 .push('origin', 'master');
             return true;
         } catch (err) {
-            throw err;
+            console.log(chalk.red('Could not push to the remote repo. Please ensure that you have an SSH key configured with your GitHub account'))
+            console.log(err);
+            process.exit(1);
         } finally {
             status.stop();
+        }
+    }
+
+    public createDirectory(name:string){
+        let fs = require('fs');
+        let dir = './'+name;
+
+        if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir);
+        } else {
+            console.log(chalk.red(`Cannot init repo. There is already a directory named ${name}`));
+            process.exit(1);
         }
     }
 }
