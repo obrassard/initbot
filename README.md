@@ -16,7 +16,7 @@
 1. Install initbot from NPM
 
 ```
-npm install -g obrassard/initbot
+npm install -g @obrassard/initbot --registry=https://npm.pkg.github.com/obrassard
 ```
 
 2. Make sure you've added a local SSH key to your GitHub account. This is required to clone and push repos.
