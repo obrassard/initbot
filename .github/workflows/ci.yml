@@ -17,9 +17,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: npm install and test
-      run: |
-        npm install
-        npm test
+    - name: Install packages
+      run: npm install
+    - name: Build TypeScript files
+      run: npm run dist
+    - name: Run mocha test cases
+      run: npm test
       env:
         CI: true
