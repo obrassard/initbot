@@ -38,7 +38,7 @@ export class AliasesService {
             console.log(chalk.red("Error : This template alias doesn't exists"));
             process.exit(1);
         } 
-
+        aliasConfig[alias].name = 'testci'
         return aliasConfig[alias];
     }
 
