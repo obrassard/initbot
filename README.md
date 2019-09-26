@@ -1,5 +1,7 @@
 # Initbot
 
+![](https://github.com/obrassard/initbot/workflows/Node%20CI/badge.svg)
+
 > TODO Project description
 
 > This project was inspired by : [sitepoint-editors/ginit](https://github.com/sitepoint-editors/ginit)
