@@ -9,7 +9,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc && node dist/main.js",
-    "dev": "node -r ts-node/register ./src/main.ts",
+    "dev": "ts-node --files ./src/main.ts",
     "dist": "npm run clean && tsc",
     "watch": "nodemon --exec npm run dev",
     "clean": "rm -rf dist",

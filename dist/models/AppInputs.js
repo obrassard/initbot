@@ -7,3 +7,4 @@ class AppInputs {
     }
 }
 exports.AppInputs = AppInputs;
+//# sourceMappingURL=AppInputs.js.map

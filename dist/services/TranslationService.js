@@ -48,3 +48,4 @@ class TranslationService {
 }
 TranslationService._currentTrad = null;
 exports.TranslationService = TranslationService;
+//# sourceMappingURL=TranslationService.js.map

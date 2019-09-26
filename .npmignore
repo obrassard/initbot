@@ -2,3 +2,5 @@ src/
 .github/
 nodemon.js
 tsconfig.json
+.vscode/
+dist/**/*.map

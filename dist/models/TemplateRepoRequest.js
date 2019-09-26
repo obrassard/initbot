@@ -9,3 +9,4 @@ class TemplateRepoRequest extends EmptyRepoRequest_1.EmptyRepoRequest {
     }
 }
 exports.TemplateRepoRequest = TemplateRepoRequest;
+//# sourceMappingURL=TemplateRepoRequest.js.map
