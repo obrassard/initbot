@@ -56,7 +56,20 @@ export class AliasesService {
         }
 
         delete aliasConfig[alias];
+        config.set("aliases",aliasConfig);
         console.log(chalk.green(`The alias @${alias} has been deleted.`))
+    }
+
+    public static getAllAliases() : string[][] {
+        const config = new Configstore('initbot');
+        let aliases: any = config.get("aliases");
+        if (aliases){
+            let aliasList = Object.keys(aliases).map((key) => {
+                return [`@${key}`, `${aliases[key].owner}/${aliases[key].name}`]
+            })
+            return aliasList;
+        } 
+        return [];
     }
 
     public static clearAllAliases() {

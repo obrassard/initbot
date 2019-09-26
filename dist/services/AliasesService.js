@@ -46,7 +46,19 @@ class AliasesService {
             process.exit(1);
         }
         delete aliasConfig[alias];
+        config.set("aliases", aliasConfig);
         console.log(chalk_1.default.green(`The alias @${alias} has been deleted.`));
+    }
+    static getAllAliases() {
+        const config = new configstore_1.default('initbot');
+        let aliases = config.get("aliases");
+        if (aliases) {
+            let aliasList = Object.keys(aliases).map((key) => {
+                return [`@${key}`, `${aliases[key].owner}/${aliases[key].name}`];
+            });
+            return aliasList;
+        }
+        return [];
     }
     static clearAllAliases() {
         const config = new configstore_1.default('initbot');
@@ -55,3 +67,4 @@ class AliasesService {
     }
 }
 exports.AliasesService = AliasesService;
+//# sourceMappingURL=AliasesService.js.map

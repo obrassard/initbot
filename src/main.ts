@@ -73,8 +73,14 @@ function parseArguments(){
     } else if ('logout' in args) {
         input.appMode = "logout";
     } else if ('alias' in args ) {
-        input.appMode = "alias";
-        input.alias = new AliasRequest(args.alias);
+
+        if (typeof args.alias == "string"){
+            input.appMode = "alias";
+            input.alias = new AliasRequest(args.alias);
+        } else {
+            input.appMode = "lsalias"
+        }
+
     } else if ('rm' in args) {
         input.appMode = "rmalias";
         if (typeof args.rm != "string"){
@@ -128,13 +134,24 @@ async function main() {
         args =  await launchInteractiveMode();
     }
 
-    if (args.appMode == "alias") {
+    if (args.appMode == "help") {
+        //TODO Help manual
+        console.log('HELP TEXT');
+    } else if (args.appMode == "alias") {
         AliasesService.setAlias(args.alias!);
     } else if (args.appMode == "rmalias") {
         AliasesService.removeAlias(args.aliasName!);
-    } else if (args.appMode == "help") {
-        //TODO Help manual
-        console.log('HELP TEXT');
+    } else if (args.appMode == "lsalias") {
+        let aliases = AliasesService.getAllAliases();
+        if (aliases.length > 0) {
+            console.log('List of existing aliases : \n')
+            aliases.forEach((x) => {
+                console.log(x[0], " => ", x[1]);
+            })
+        } else {
+            console.log('There is no alias actually.')
+        }
+        
     } else if (args.appMode == "logout") {
         await GithubService.destroyToken();
     } else {
@@ -158,7 +175,7 @@ async function main() {
         }
     }
     
-    console.log("Thanks for using initbot");
+    console.log(chalk.yellow("\nThanks for using initbot !"));
 
 }
 

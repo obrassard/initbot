@@ -6,10 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const chalk_1 = __importDefault(require("chalk"));
 class AliasRequest {
     constructor(rawalias) {
-        if (typeof rawalias != "string") {
-            console.log(chalk_1.default.red("Missing arguments, please refer to the docs. (initbot --help)"));
-            process.exit(1);
-        }
         let parts = rawalias.split("=");
         if (parts.length < 2) {
             console.log(chalk_1.default.red('Invalid syntax : ' + rawalias));
@@ -26,3 +22,4 @@ class AliasRequest {
     }
 }
 exports.AliasRequest = AliasRequest;
+//# sourceMappingURL=AliasRequest.js.map

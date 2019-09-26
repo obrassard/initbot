@@ -75,8 +75,13 @@ function parseArguments() {
         input.appMode = "logout";
     }
     else if ('alias' in args) {
-        input.appMode = "alias";
-        input.alias = new AliasRequest_1.AliasRequest(args.alias);
+        if (typeof args.alias == "string") {
+            input.appMode = "alias";
+            input.alias = new AliasRequest_1.AliasRequest(args.alias);
+        }
+        else {
+            input.appMode = "lsalias";
+        }
     }
     else if ('rm' in args) {
         input.appMode = "rmalias";
@@ -125,15 +130,27 @@ function main() {
         if (args == null) {
             args = yield launchInteractiveMode();
         }
-        if (args.appMode == "alias") {
+        if (args.appMode == "help") {
+            //TODO Help manual
+            console.log('HELP TEXT');
+        }
+        else if (args.appMode == "alias") {
             AliasesService_1.AliasesService.setAlias(args.alias);
         }
         else if (args.appMode == "rmalias") {
             AliasesService_1.AliasesService.removeAlias(args.aliasName);
         }
-        else if (args.appMode == "help") {
-            //TODO Help manual
-            console.log('HELP TEXT');
+        else if (args.appMode == "lsalias") {
+            let aliases = AliasesService_1.AliasesService.getAllAliases();
+            if (aliases.length > 0) {
+                console.log('List of existing aliases : \n');
+                aliases.forEach((x) => {
+                    console.log(x[0], " => ", x[1]);
+                });
+            }
+            else {
+                console.log('There is no alias actually.');
+            }
         }
         else if (args.appMode == "logout") {
             yield GithubService_1.GithubService.destroyToken();
@@ -154,7 +171,8 @@ function main() {
                 yield service.createEmptyRepo(req);
             }
         }
-        console.log("Thanks for using initbot");
+        console.log(chalk_1.default.yellow("\nThanks for using initbot !"));
     });
 }
 main();
+//# sourceMappingURL=main.js.map

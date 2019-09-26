@@ -4,11 +4,6 @@ export class AliasRequest {
 
     constructor(rawalias: string) {
 
-        if (typeof rawalias != "string"){
-            console.log(chalk.red("Missing arguments, please refer to the docs. (initbot --help)"));
-            process.exit(1);
-        }
-
         let parts = rawalias.split("=");
         if (parts.length < 2) {
             console.log(chalk.red('Invalid syntax : ' + rawalias));
