@@ -3,15 +3,17 @@ import { AliasesService } from '../services/AliasesService'
 import { AliasRequest } from "../models/AliasRequest";
 
 describe("AliasesService test suite", () => {
-    beforeEach(() => {
+    before((done) => {
         AliasesService.clearAllAliases();
+        done();
     })
 
-    after(() => {
+    after((done) => {
         AliasesService.clearAllAliases();
+        done();
     })
 
-    it('should resolve existing alias', () => {
+    it('should resolve existing alias', (done) => {
         let req = new AliasRequest("aliasName=owner/repo");
         AliasesService.setAlias(req);
 
@@ -22,6 +24,7 @@ describe("AliasesService test suite", () => {
         assert.equal(alias2.name, 'repo');
         assert.equal(alias1.owner, 'owner');
         assert.equal(alias2.owner, 'owner');
+        done();
     })
 
     // it('should be able to delete existing alias', () => {

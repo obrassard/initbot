@@ -15,7 +15,7 @@
     "clean": "rm -rf dist",
     "global": "npm run dist && npm install -g",
     "publish": "npm run dist && npm publish",
-    "test": "mocha --require ts-node/register src/tests/**/*.spec.ts"
+    "test": "mocha -t 5000 --require ts-node/register src/tests/**/*.spec.ts"
   },
   "keywords": [
     "Git",
