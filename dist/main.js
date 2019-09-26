@@ -71,7 +71,7 @@ function parseArguments() {
     if ('help' in args) {
         input.appMode = "help";
     }
-    if ('logout' in args) {
+    else if ('logout' in args) {
         input.appMode = "logout";
     }
     else if ('alias' in args) {
