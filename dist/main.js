@@ -21,6 +21,8 @@ const AliasRequest_1 = require("./models/AliasRequest");
 const AliasesService_1 = require("./services/AliasesService");
 const TemplateRepoRequest_1 = require("./models/TemplateRepoRequest");
 const GithubService_1 = require("./services/GithubService");
+const TranslationService_1 = require("./services/TranslationService");
+const t = TranslationService_1.TranslationService.getTranslations();
 function launchInteractiveMode() {
     return __awaiter(this, void 0, void 0, function* () {
         let args = yield InquirerService_1.InquirerService.askRepoDetails();
@@ -57,7 +59,7 @@ function parseRepoTemplate(template) {
         return AliasesService_1.AliasesService.resolveAlias(template);
     }
     else if (temp.length < 2) {
-        console.log(chalk_1.default.red('Invalid template : ' + template));
+        console.log(chalk_1.default.red(t.invalidTemplate + template));
         process.exit(1);
         return {
             name: temp[1].trim(),
@@ -86,7 +88,7 @@ function parseArguments() {
     else if ('rm' in args) {
         input.appMode = "rmalias";
         if (typeof args.rm != "string") {
-            console.log(chalk_1.default.red("Missing arguments for --rm mode, please refer to the docs. (initbot --help)"));
+            console.log(chalk_1.default.red(t.missingArgsRm));
             process.exit(1);
         }
         input.aliasName = args.rm;
@@ -104,7 +106,7 @@ function parseArguments() {
         input.useTemplate = ("t" in args);
         if (input.useTemplate) {
             if (typeof args.t != "string") {
-                console.log(chalk_1.default.red("Missing arguments for -t, please refer to the docs. (initbot --help)"));
+                console.log(chalk_1.default.red(t.missingArgsT));
                 process.exit(1);
             }
             if (args.t.startsWith('@')) {
@@ -131,8 +133,18 @@ function main() {
             args = yield launchInteractiveMode();
         }
         if (args.appMode == "help") {
-            //TODO Help manual
-            console.log('HELP TEXT');
+            // Help manual
+            const fs = require('fs');
+            const path = require('path');
+            let appDir = path.resolve(__dirname, '..');
+            let filePath = `${appDir}/manual.txt`;
+            try {
+                let manual = fs.readFileSync(filePath, "utf8");
+                console.log('\n' + manual);
+            }
+            catch (_a) {
+                console.log(chalk_1.default.red(t.errorManNotFound));
+            }
         }
         else if (args.appMode == "alias") {
             AliasesService_1.AliasesService.setAlias(args.alias);
@@ -143,13 +155,13 @@ function main() {
         else if (args.appMode == "lsalias") {
             let aliases = AliasesService_1.AliasesService.getAllAliases();
             if (aliases.length > 0) {
-                console.log('List of existing aliases : \n');
+                console.log(t.aliasList);
                 aliases.forEach((x) => {
                     console.log(x[0], " => ", x[1]);
                 });
             }
             else {
-                console.log('There is no alias actually.');
+                console.log(t.noAliases);
             }
         }
         else if (args.appMode == "logout") {
@@ -171,7 +183,7 @@ function main() {
                 yield service.createEmptyRepo(req);
             }
         }
-        console.log(chalk_1.default.yellow("\nThanks for using initbot !"));
+        console.log(chalk_1.default.yellow(t.thanksMessage));
     });
 }
 main();

@@ -136,8 +136,17 @@ async function main() {
     }
 
     if (args.appMode == "help") {
-        //TODO Help manual
-        console.log('HELP TEXT');
+        // Help manual
+        const fs = require('fs');
+        const path = require('path');
+        let appDir = path.resolve(__dirname, '..')
+        let filePath = `${appDir}/manual.txt`;
+        try {
+            let manual = fs.readFileSync(filePath, "utf8");
+            console.log('\n' + manual);
+        } catch  {
+            console.log(chalk.red(t.errorManNotFound))
+        }
     } else if (args.appMode == "alias") {
         AliasesService.setAlias(args.alias!);
     } else if (args.appMode == "rmalias") {

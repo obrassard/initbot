@@ -40,6 +40,7 @@
     "noAliases": "There is no alias actually.",
     "aliasList": "List of existing aliases : \n",
 
+    "errorManNotFound" : "Something's wrong. Could not find the manual. Please try to reinstall the package.",
     "errorRepoInit" : "Cannot init repo. There is already a directory named %",
     "warningBranchProtection" : "Warning : An error occured while protecting branches",
     "warningBranchCreationError" : "Warning : Couldn't create develop on remote",

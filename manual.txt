@@ -1,0 +1,17 @@
+initbot [<repo-name> [-d "description"] [-c user1,user2] [-t owner/repo] [-p] [-b] [-u]] 
+[--alias [aliasName=template/owner]] [--rm aliasName] [--logout] [--help]
+
+repo-name   The name of the repo to create
+-d          Add a description
+-c          Invite colaborators (comma separated usernames)
+-t          Use a repository template (owner/repo or @aliasName) 
+-p          Public repositroy (default: private) 
+-u          Disable automatic branches protection
+-b          Do not create a develop branch
+
+--alias                         Show all template aliases
+--alias aliasName=owner/repo    Create a new alias mapped to owner/repo
+--rm aliasName                  Delete a specific alias
+
+--logout    Disconnect your GitHub Account from Initbot
+--help      Show this help page
