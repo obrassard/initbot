@@ -18,6 +18,7 @@
     "branchProtectionSuccess" : "Branches succesfully protected on remote.",
     "repoCloneSuccess" : "Repository was successfully cloned at %",
     "initializingRepo" : "Initializing local repository and pushing to remote...",
+    "thanksMessage" : "\nThanks for using initbot !",
     
     "inquirerGhUsername" : "Enter your Github username or e-mail address:",
     "inquirerGhUsernameValidation" : "Please enter your username or e-mail address.",
@@ -33,6 +34,12 @@
     "inquirerProtectBranches" : "Protect master and develop branches [yes,no]:",
     "inquirerIgnoreFiles" : "Select the files and/or folders you wish to ignore:",
     
+    "missingArgsT" : "Missing arguments for -t, please refer to the docs. (initbot --help)",
+    "missingArgsRm" : "Missing arguments for --rm mode, please refer to the docs. (initbot --help)",
+    "invalidTemplate": "Invalid template : ",
+    "noAliases": "There is no alias actually.",
+    "aliasList": "List of existing aliases : \n",
+
     "errorRepoInit" : "Cannot init repo. There is already a directory named %",
     "warningBranchProtection" : "Warning : An error occured while protecting branches",
     "warningBranchCreationError" : "Warning : Couldn't create develop on remote",

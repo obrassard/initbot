@@ -9,7 +9,8 @@ import { AliasRequest } from "./models/AliasRequest";
 import { AliasesService } from "./services/AliasesService";
 import { TemplateRepoRequest } from "./models/TemplateRepoRequest";
 import { GithubService } from "./services/GithubService";
-
+import { TranslationService } from "./services/TranslationService";
+const t = TranslationService.getTranslations();
 async function launchInteractiveMode(): Promise<AppInputs>{
     let args:any = await InquirerService.askRepoDetails();
 
@@ -54,7 +55,7 @@ function parseRepoTemplate(template:string){
        return AliasesService.resolveAlias(template);
     }
     else if (temp.length < 2) {
-        console.log(chalk.red('Invalid template : ' + template));
+        console.log(chalk.red(t.invalidTemplate + template));
         process.exit(1);
         return {
             name: temp[1].trim(),
@@ -84,7 +85,7 @@ function parseArguments(){
     } else if ('rm' in args) {
         input.appMode = "rmalias";
         if (typeof args.rm != "string"){
-            console.log(chalk.red("Missing arguments for --rm mode, please refer to the docs. (initbot --help)"));
+            console.log(chalk.red(t.missingArgsRm));
             process.exit(1);
         }
         input.aliasName = args.rm;
@@ -104,7 +105,7 @@ function parseArguments(){
         if (input.useTemplate) {
 
             if (typeof args.t != "string"){
-                console.log(chalk.red("Missing arguments for -t, please refer to the docs. (initbot --help)"));
+                console.log(chalk.red(t.missingArgsT));
                 process.exit(1);
             }
 
@@ -144,12 +145,12 @@ async function main() {
     } else if (args.appMode == "lsalias") {
         let aliases = AliasesService.getAllAliases();
         if (aliases.length > 0) {
-            console.log('List of existing aliases : \n')
+            console.log(t.aliasList)
             aliases.forEach((x) => {
                 console.log(x[0], " => ", x[1]);
             })
         } else {
-            console.log('There is no alias actually.')
+            console.log(t.noAliases)
         }
         
     } else if (args.appMode == "logout") {
@@ -175,7 +176,7 @@ async function main() {
         }
     }
     
-    console.log(chalk.yellow("\nThanks for using initbot !"));
+    console.log(chalk.yellow(t.thanksMessage));
 
 }
 
