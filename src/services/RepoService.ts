@@ -5,7 +5,8 @@ import touch from 'touch';
 import chalk from 'chalk';
 import '../extensions/stringExtension';
 const Spinner = CLI.Spinner;
-
+import { TranslationService } from "./TranslationService";
+const t = TranslationService.getTranslations();
 import { InquirerService } from './InquirerService';
 import { GithubService } from './GithubService';
 import { EmptyRepoRequest } from '../models/EmptyRepoRequest';
@@ -18,7 +19,7 @@ export class RepoService {
         return GithubService.getInstance().then(async (github) => {
             if (github != undefined) {
 
-                const status = new Spinner('Creating remote repository...');
+                const status = new Spinner(t.creatingRemoteRepo);
                 status.start();
 
                 let data: any = {
@@ -31,7 +32,7 @@ export class RepoService {
                     const response = await github.repos.createForAuthenticatedUser(data);
                     let repo = response.data;
 
-                    console.log(chalk.green(`Your new repo was successfully created : ${repo.html_url}`));
+                    console.log(chalk.green(t.repoCreateSuccess.replace('%',repo.html_url)));
 
                     if (req.collaborators != undefined) {
                         await this.addCollaborators(github,repo, req.collaborators);
@@ -54,9 +55,9 @@ export class RepoService {
                 } catch (err) {
                     status.stop();
                     if (err.status == 422) {
-                        console.log(chalk.red(`You already have a repo called ${data.name}`));
+                        console.log(chalk.red(t.errorRepoExists.replace('%',data.name)));
                     } else {
-                        console.log(chalk.red("An error occured, please try again."));
+                        console.log(chalk.red(t.errorUnexpected));
                     }
                     process.exit(1);
                 } 
@@ -68,7 +69,7 @@ export class RepoService {
         return GithubService.getInstance().then(async (github) => {
             if (github != undefined) {
 
-                let status = new Spinner('Creating remote repository...');
+                let status = new Spinner(t.creatingRemoteRepo);
                 status.start();
 
                 let data: any = {
@@ -84,10 +85,10 @@ export class RepoService {
                     let repo = response.data;
 
                     status.stop();
-                    console.log(chalk.green(`Your new repo was successfully created : ${repo.html_url}`));
+                    console.log(chalk.green(t.repoCreateSuccess.replace('%',repo.html_url)));
 
                     if (req.collaborators != undefined) {
-                        status = new Spinner('Adding collaborators')
+                        status = new Spinner(t.addingCollaborator)
                         await this.addCollaborators(github,repo, req.collaborators);
                         status.stop();
                     }
@@ -107,13 +108,13 @@ export class RepoService {
                 } catch (err) {
                     status.stop();
                     if (err.status == 422) {
-                        console.log(chalk.red(`You already have a repo called ${data.name}`));
+                        console.log(chalk.red(t.errorRepoExists.replace('%',data.name)));
                     } else if (err.start == 404){ 
                         //template not found
-                        console.log(chalk.red(`The specified template (${data.template_owner}/${data.template_repo}) doesn't exist.`));
+                        console.log(chalk.red(t.errorTemplateNotFound.replace('%',`${data.template_owner}/${data.template_repo}`)));
                     } else {
                         console.log(err);
-                        console.log(chalk.red("An unexpected error occured, please try again."));
+                        console.log(chalk.red(t.errorUnexpected));
                     }
                 
                     process.exit(1);
@@ -130,17 +131,17 @@ export class RepoService {
                     repo: repo.name,
                     username: user
                 })
-                console.log(chalk.green(`${repo.owner.login} has been invited to collaborate to your repo`));
+                console.log(chalk.green(t.userInvited.replace('%', repo.owner.login)));
 
             } catch {
-                console.log(chalk.red(`Impossible to add this colaborator : ${user}`))
+                console.log(chalk.red(t.errorCollaboratorNotFound.replace('%',user)))
             }
         }
     }
 
     private async createDevelopBranch(repo: any){
 
-        let spin = new Spinner('Creating develop branch...');
+        let spin = new Spinner(t.creatingDevelop);
 
         try {
             spin.start();
@@ -149,11 +150,11 @@ export class RepoService {
             await git.checkoutLocalBranch('develop').push('origin', 'develop');
 
             spin.stop();
-            console.log(chalk.green(`Branch develop succesfully created`));
+            console.log(chalk.green(t.developCreated));
             spin.stop();
         } catch  (e) {
             console.log(e);
-            console.log(chalk.yellow("Warning", "Couldn't create develop on remote"));
+            console.log(chalk.yellow(t.warningBranchCreationError));
         }
 
     }
@@ -175,7 +176,7 @@ export class RepoService {
     }
 
     public async protectBaseBranches(github: Octokit, repo:any, develop: boolean) {
-        let spin = new Spinner('Protecting branches...');
+        let spin = new Spinner(t.protectingBranches);
         
         try {
             spin.start();
@@ -208,11 +209,11 @@ export class RepoService {
             }
 
             spin.stop();
-            console.log(chalk.green(`Branches succesfully protected on remote.`));
+            console.log(chalk.green(t.branchProtectionSuccess));
         
         } catch (e) {
             spin.stop()
-            console.log(chalk.yellow("Warning : An error occured while protecting branches"));
+            console.log(chalk.yellow(t.warningBranchProtection));
         }
     }
 
@@ -223,10 +224,10 @@ export class RepoService {
             let git = require('simple-git')('./');
             await git.clone(ssh_url, `./${name}`);
             status.stop();
-            console.log(chalk.green('Repository was cloned at ' + process.cwd() + '/' + name))
+            console.log(chalk.green(t.repoCloneSuccess.replace('%',`${process.cwd()}/${name}`)))
             return true;
         } catch (err) {
-            console.log(chalk.red('Could not clone the repo. Please ensure that you have an SSH key configured with your GitHub account'))
+            console.log(chalk.red(t.errorSshClone))
             console.log(err);
             process.exit(1);
         } finally {
@@ -235,7 +236,7 @@ export class RepoService {
     }
 
     public async initRepo(ssh_url: string, name:string) {
-        const status = new Spinner('Initializing local repository and pushing to remote...');
+        const status = new Spinner(t.initializingRepo);
         try {
             status.start();
             this.createDirectory(name);
@@ -254,7 +255,7 @@ export class RepoService {
                 .push('origin', 'master');
             return true;
         } catch (err) {
-            console.log(chalk.red('Could not push to the remote repo. Please ensure that you have an SSH key configured with your GitHub account'))
+            console.log(chalk.red(t.errorSshPush))
             console.log(err);
             process.exit(1);
         } finally {
@@ -269,7 +270,7 @@ export class RepoService {
         if (!fs.existsSync(dir)){
             fs.mkdirSync(dir);
         } else {
-            console.log(chalk.red(`Cannot init repo. There is already a directory named ${name}`));
+            console.log(chalk.red(t.errorRepoInit.replace('%',name)));
             process.exit(1);
         }
     }

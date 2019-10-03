@@ -1,6 +1,8 @@
 import { AliasRequest } from "../models/AliasRequest";
 import Configstore from "configstore";
 import chalk from "chalk";
+import { TranslationService } from "./TranslationService";
+const t = TranslationService.getTranslations();
 
 export class AliasesService {
     public static setAlias(alias: AliasRequest) {
@@ -8,7 +10,7 @@ export class AliasesService {
         let aliasConfig: any = config.get("aliases");
 
         if (aliasConfig != undefined && alias.alias in aliasConfig) {
-            console.log(chalk.red("There is already a template alias named " + alias.alias ));
+            console.log(chalk.red(t.aliasExists.replace('%',alias.alias)));
             process.exit(1);
         } 
 
@@ -22,7 +24,7 @@ export class AliasesService {
         }
 
         config.set("aliases",aliasConfig);
-        console.log(chalk.green(`@${alias.alias} is now mapped to ${alias.owner}/${alias.template}`))
+        console.log(chalk.green(`@${alias.alias} ${t.nowMappedTo} ${alias.owner}/${alias.template}`))
     }
 
     public static resolveAlias(alias: string) {
@@ -35,7 +37,7 @@ export class AliasesService {
         let aliasConfig: any = config.get("aliases");
         
         if (aliasConfig == undefined || !(alias in aliasConfig)) {
-            console.log(chalk.red("Error : This template alias doesn't exists"));
+            console.log(chalk.red(t.errorAliasNotFound));
             process.exit(1);
         } 
 
@@ -51,13 +53,13 @@ export class AliasesService {
         }
 
         if (aliasConfig == undefined || !(alias in aliasConfig)) {
-            console.log(chalk.red("Error : This template alias doesn't exists"));
+            console.log(chalk.red(t.errorAliasNotFound));
             process.exit(1);
         }
 
         delete aliasConfig[alias];
         config.set("aliases",aliasConfig);
-        console.log(chalk.green(`The alias @${alias} has been deleted.`))
+        console.log(chalk.green(t.aliasSuccessDelete.replace('%',alias)))
     }
 
     public static getAllAliases() : string[][] {

@@ -1,6 +1,8 @@
 import { FileService } from './FileService';
 import inquirer from 'inquirer';
+import { TranslationService } from "./TranslationService";
 
+const t = TranslationService.getTranslations();
 
 export class InquirerService {
 
@@ -9,24 +11,24 @@ export class InquirerService {
 			{
 				name: 'username',
 				type: 'input',
-				message: 'Enter your Github username or e-mail address:',
+				message: t.inquirerGhUsername,
 				validate: function (value: string) {
 					if (value.length) {
 						return true;
 					} else {
-						return 'Please enter your username or e-mail address.';
+						return t.inquirerGhUsernameValidation;
 					}
 				}
 			},
 			{
 				name: 'password',
 				type: 'password',
-				message: 'Enter your password:',
+				message: t.inquirerPassword,
 				validate: function (value: string) {
 					if (value.length) {
 						return true;
 					} else {
-						return 'Please enter your password.';
+						return t.inquirerPasswordValidation;
 					}
 				}
 			}
@@ -57,48 +59,48 @@ export class InquirerService {
 			{
 				type: 'input',
 				name: 'name',
-				message: 'Enter a name for the repository:',
+				message: t.inquirerRepoName,
 				default: FileService.getCurrentDirectoryBase(),
 				validate: function (value: string) {
 					if (value.length) {
 						return true;
 					} else {
-						return 'Please enter a name for the repository.';
+						return t.inquirerRepoNameValidation;
 					}
 				}
 			},
 			{
 				type: 'input',
 				name: 'description',
-				message: 'Optionally enter a description of the repository:'
+				message: t.inquirerDesc
 			},
 			{
 				type: 'list',
 				name: 'visibility',
-				message: 'Public or private:',
+				message: t.inquirerPublicPrivate,
 				choices: ['public', 'private'],
-				default: 'private'
+				default: 'private',
 			},
 			{
 				type: 'input',
 				name: 'collaborators',
-				message: 'Add collaborators ? (Usernames separated by commas):',
+				message: t.inquirerColaborators,
 			},
 			{
 				type: 'input',
 				name: 'template',
-				message: 'Optionally enter a template repo [owner/repo]:',
+				message: t.inquirerTemplate,
 			},
 			{
 				type: 'confirm',
 				name: 'createDevelop',
-				message: 'Create develop branch [yes, no]:',
+				message: t.inquirerDevelop,
 				default: true
 			},
 			{
 				type: 'confirm',
 				name: 'protectBranches',
-				message: 'Protect master and develop branches [yes,no]:',
+				message: t.inquirerProtectBranches,
 				default: true
 			},
 		];
@@ -110,7 +112,7 @@ export class InquirerService {
 			{
 				type: 'checkbox',
 				name: 'ignore',
-				message: 'Select the files and/or folders you wish to ignore:',
+				message: t.inquirerIgnoreFiles,
 				choices: filelist,
 				default: ['node_modules', 'bower_components']
 			}

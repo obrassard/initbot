@@ -35,7 +35,7 @@ export class GithubService {
 
 	private static async _basicAuth() {
 		let credentials:any = await InquirerService.askGithubCredentials();
-		const spin = new Spinner('Authenticating you, please wait...');
+		const spin = new Spinner(t.authenticating);
 		try {
 			let octokit = new Octokit({
 				auth: {
@@ -56,9 +56,9 @@ export class GithubService {
 		} catch (error) {
 			spin.stop();
 			if (error.status == 401) {
-				console.log(chalk.red("Votre nom d'utilisateur ou votre mot de passe est incorrect, veuillez réésayer."))
+				console.log(chalk.red(t.invalidGHCredentials))
 			} else if (error.status == 422) {
-				console.log(chalk.red('Impossible to create a new GitHub Token, you may delete the existing "Initbot CLI" token from your account (https://github.com/settings/tokens) and try again.'));
+				console.log(chalk.red(t.errorCannotCreateToken));
 			}
 			process.exit(1);
 		}
@@ -67,7 +67,7 @@ export class GithubService {
 	private static async requestNewToken() {
 		let octokit = await this._basicAuth();
 
-		const spin = new Spinner('Authenticating you, please wait...');
+		const spin = new Spinner(t.authenticating);
 		spin.start();
 		try {
 			const response = await octokit!.oauthAuthorizations.createAuthorization({
@@ -86,12 +86,12 @@ export class GithubService {
 				return octokit;
 			} else {
 				spin.stop();
-				console.log(chalk.red("Missing Token", "Github token was not found in the response."));
+				console.log(chalk.red(t.errorMissingToken));
 				process.exit(1);
 			}
 		} catch {
 			spin.stop();
-			console.log(chalk.red("Sorry, an error occured. Please visit https://github.com/settings/tokens to delete the Initbot CLI token and try again."))
+			console.log(chalk.red(t.errorUnexpectedGH))
 			process.exit(1);
 		}
 	}
@@ -104,7 +104,7 @@ export class GithubService {
 		let token:any = await this.getStoredGithubToken();
 		
 		if (token != null) {
-			console.log(chalk.blue("You must login with your username/password in order to rempve the authentication token from your GH accournt :"))
+			console.log(chalk.blue(t.loginToDeleteToken))
 			let octokit = await this._basicAuth();
 			try {
 				config.delete('github.token')
@@ -116,17 +116,17 @@ export class GithubService {
 				});
 
 				if (response) {
-					console.log(chalk.green('You\'ve been successfully disconnected and the auth token have been removed from your account.'));
+					console.log(chalk.green(t.logoutSuccess));
 				}
 				return false;
 
 			} catch (error) {
 				console.error(error);
-				console.log(chalk.red("An unexpected error occured", "You've been disconnected, but their was an error while deleting your Github token."));
+				console.log(chalk.red(t.errorLogoutUnexpected));
 				process.exit(1);
 			}
 		} else {
-			console.log('You are not authentified.')
+			console.log(t.notAuthentified)
 		}
 	}
 }

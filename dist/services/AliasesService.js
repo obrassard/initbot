@@ -5,12 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const configstore_1 = __importDefault(require("configstore"));
 const chalk_1 = __importDefault(require("chalk"));
+const TranslationService_1 = require("./TranslationService");
+const t = TranslationService_1.TranslationService.getTranslations();
 class AliasesService {
     static setAlias(alias) {
         const config = new configstore_1.default('initbot');
         let aliasConfig = config.get("aliases");
         if (aliasConfig != undefined && alias.alias in aliasConfig) {
-            console.log(chalk_1.default.red("There is already a template alias named " + alias.alias));
+            console.log(chalk_1.default.red(t.aliasExists.replace('%', alias.alias)));
             process.exit(1);
         }
         if (aliasConfig == undefined) {
@@ -21,7 +23,7 @@ class AliasesService {
             owner: alias.owner
         };
         config.set("aliases", aliasConfig);
-        console.log(chalk_1.default.green(`@${alias.alias} is now mapped to ${alias.owner}/${alias.template}`));
+        console.log(chalk_1.default.green(`@${alias.alias} ${t.nowMappedTo} ${alias.owner}/${alias.template}`));
     }
     static resolveAlias(alias) {
         if (alias.startsWith("@")) {
@@ -30,7 +32,7 @@ class AliasesService {
         const config = new configstore_1.default('initbot');
         let aliasConfig = config.get("aliases");
         if (aliasConfig == undefined || !(alias in aliasConfig)) {
-            console.log(chalk_1.default.red("Error : This template alias doesn't exists"));
+            console.log(chalk_1.default.red(t.errorAliasNotFound));
             process.exit(1);
         }
         return aliasConfig[alias];
@@ -42,12 +44,12 @@ class AliasesService {
             alias = alias.substring(1);
         }
         if (aliasConfig == undefined || !(alias in aliasConfig)) {
-            console.log(chalk_1.default.red("Error : This template alias doesn't exists"));
+            console.log(chalk_1.default.red(t.errorAliasNotFound));
             process.exit(1);
         }
         delete aliasConfig[alias];
         config.set("aliases", aliasConfig);
-        console.log(chalk_1.default.green(`The alias @${alias} has been deleted.`));
+        console.log(chalk_1.default.green(t.aliasSuccessDelete.replace('%', alias)));
     }
     static getAllAliases() {
         const config = new configstore_1.default('initbot');

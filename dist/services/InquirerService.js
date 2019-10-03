@@ -5,32 +5,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const FileService_1 = require("./FileService");
 const inquirer_1 = __importDefault(require("inquirer"));
+const TranslationService_1 = require("./TranslationService");
+const t = TranslationService_1.TranslationService.getTranslations();
 class InquirerService {
     static askGithubCredentials() {
         const questions = [
             {
                 name: 'username',
                 type: 'input',
-                message: 'Enter your Github username or e-mail address:',
+                message: t.inquirerGhUsername,
                 validate: function (value) {
                     if (value.length) {
                         return true;
                     }
                     else {
-                        return 'Please enter your username or e-mail address.';
+                        return t.inquirerGhUsernameValidation;
                     }
                 }
             },
             {
                 name: 'password',
                 type: 'password',
-                message: 'Enter your password:',
+                message: t.inquirerPassword,
                 validate: function (value) {
                     if (value.length) {
                         return true;
                     }
                     else {
-                        return 'Please enter your password.';
+                        return t.inquirerPasswordValidation;
                     }
                 }
             }
@@ -59,49 +61,49 @@ class InquirerService {
             {
                 type: 'input',
                 name: 'name',
-                message: 'Enter a name for the repository:',
+                message: t.inquirerRepoName,
                 default: FileService_1.FileService.getCurrentDirectoryBase(),
                 validate: function (value) {
                     if (value.length) {
                         return true;
                     }
                     else {
-                        return 'Please enter a name for the repository.';
+                        return t.inquirerRepoNameValidation;
                     }
                 }
             },
             {
                 type: 'input',
                 name: 'description',
-                message: 'Optionally enter a description of the repository:'
+                message: t.inquirerDesc
             },
             {
                 type: 'list',
                 name: 'visibility',
-                message: 'Public or private:',
+                message: t.inquirerPublicPrivate,
                 choices: ['public', 'private'],
-                default: 'private'
+                default: 'private',
             },
             {
                 type: 'input',
                 name: 'collaborators',
-                message: 'Add collaborators ? (Usernames separated by commas):',
+                message: t.inquirerColaborators,
             },
             {
                 type: 'input',
                 name: 'template',
-                message: 'Optionally enter a template repo [owner/repo]:',
+                message: t.inquirerTemplate,
             },
             {
                 type: 'confirm',
                 name: 'createDevelop',
-                message: 'Create develop branch [yes, no]:',
+                message: t.inquirerDevelop,
                 default: true
             },
             {
                 type: 'confirm',
                 name: 'protectBranches',
-                message: 'Protect master and develop branches [yes,no]:',
+                message: t.inquirerProtectBranches,
                 default: true
             },
         ];
@@ -112,7 +114,7 @@ class InquirerService {
             {
                 type: 'checkbox',
                 name: 'ignore',
-                message: 'Select the files and/or folders you wish to ignore:',
+                message: t.inquirerIgnoreFiles,
                 choices: filelist,
                 default: ['node_modules', 'bower_components']
             }
