@@ -16,7 +16,7 @@ For the moment these are the available features :
 - Possibility to add a description to the repo
 - Interactive CLI mode 
 
-:bulb: Note : This is a work in progress! The current version is operational, but a more stable version is on the way !
+***:bulb: Note : This is a work in progress! The current version is operational, but a more stable version is on the way !***
 
 > This project was inspired by : [sitepoint-editors/ginit](https://github.com/sitepoint-editors/ginit)
 
@@ -37,7 +37,7 @@ npm install -g @obrassard/initbot --registry=https://npm.pkg.github.com/obrassar
 
 2. Make sure you've added a local SSH key to your GitHub account. This is required to clone and push repos.
 
-(Learn more here : [Connecting to GitHub with SSH](https://help.github.com/en/articles/connecting-to-github-with-ssh)) 
+    (Learn more here : [Connecting to GitHub with SSH](https://help.github.com/en/articles/connecting-to-github-with-ssh)) 
 
 
 
@@ -84,7 +84,7 @@ repo-name   The name of the repo to create
 --help      Show this help page
 ```
 
-> :sparkles: More details and examples to come soon !
+:sparkles: More details and examples to come soon ! :sparkles: 
 
 <!-- 
 ### Parameters 
