@@ -2,9 +2,9 @@
 
 ![](https://github.com/obrassard/initbot/workflows/Node%20CI/badge.svg)
 
-**Initbot is a powerful CLI built with Node.JS that allows you to create and initialize GitHub Repositories in seconds to optimize your development workflow.**
+**Initbot is a powerful CLI built with Node.JS that allows you to create and initialize GitHub Repositories in a few seconds to optimize your development workflow.**
 
-For the moment these are the available features :
+Here are the currently available features :
 
 - Creation of private and public repositories
 - Possibility to automatically create a development branch
