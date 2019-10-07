@@ -1,6 +1,6 @@
 {
   "name": "@obrassard/initbot",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "A powerful CLI built with Node.JS that allows you to create and initialize GitHub Repositories in a few seconds to optimize your development workflow.",
   "repository": "git://github.com/obrassard/initbot.git",
   "publishConfig": {
