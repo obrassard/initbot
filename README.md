@@ -1,4 +1,4 @@
-:warning: This repository was created before the official Github CLI :warning:
+### :warning: This repository was created before the official Github CLI :warning:
 
 https://github.com/cli/cli is much more evolved and should be used instead of this project.
 
